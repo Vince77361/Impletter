@@ -1,16 +1,41 @@
 import styled from 'styled-components';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useRef, useState } from 'react';
+import html2canvas from 'html2canvas';
 
 const Letter = () => {
   const navigate = useNavigate();
-  let { id } = useParams();
   const textarea = useRef();
+  const [value, setValue] = useState('');
+  const location = useLocation();
+  const data = location.state;
 
-  const handleResizeHeight = () => {
-    textarea.current.style.height = 'auto'; //height 초기화
-    textarea.current.style.height = textarea.current.scrollHeight + 'px';
+  const handleChange = (e) => {
+    const newValue = e.target.value;
+    const lines = newValue.split('\n').length;
+    if (lines <= 14) {
+      setValue(newValue);
+    }
+    if (newValue < 300) {
+      setValue(newValue);
+    }
   };
+
+  const onCapture = () => {
+    html2canvas(document.getElementById('container')).then((canvas) => {
+      onSaveAs(canvas.toDataURL('image/png'), `image-download.png`);
+    });
+  };
+
+  const onSaveAs = (uri, filename) => {
+    let link = document.createElement('a');
+    document.body.appendChild(link);
+    link.href = uri;
+    link.download = filename;
+    link.click();
+    document.removeChild(link);
+  };
+  //navigate('/check', { state: { image: canvas.toDataURL('image/png') } });
 
   return (
     <>
@@ -18,24 +43,37 @@ const Letter = () => {
         <Title>
           <Logo loading='lazy' alt='' src='/logo.svg'></Logo>STEP.2 편지 쓰기
         </Title>
-        <TextareaField
-        //   ref={textarea}
-        //   onChange={handleResizeHeight}
-        ></TextareaField>
-        <Button
-          onClick={() => {
-            navigate('/check');
-          }}
-        >
-          완료하기
-        </Button>
-        {/* <h1>{id}</h1> */}
+        <p style={{ marginTop: '-20px' }}>
+          편지의 줄 수를 초과할 경우 제대로 발송이 되지 않습니다.
+        </p>
+        <ImageContainer id='container'>
+          <Image src={data} />
+          <TextareaField
+            ref={textarea}
+            onChange={handleChange}
+            value={value}
+            rows={14}
+          />
+        </ImageContainer>
+        <Button onClick={onCapture}>완료하기</Button>
       </RootRoot>
     </>
   );
 };
 
 export default Letter;
+
+const ImageContainer = styled.div`
+  position: relative;
+  width: 390px;
+  height: 551px;
+  margin-bottom: 20px;
+`;
+
+const Image = styled.img`
+  width: 100%;
+  height: 100%;
+`;
 
 const RootRoot = styled.div`
   display: flex;
@@ -47,7 +85,6 @@ const RootRoot = styled.div`
   background-color: #f2f5f8;
   padding: 20px;
   box-sizing: border-box;
-  overflow: hidden;
 `;
 
 const Logo = styled.img`
@@ -57,14 +94,13 @@ const Logo = styled.img`
 
 const Title = styled.div`
   color: #000;
-  /* text-align: left; */
   display: inline-flex;
   font-family: 'VITRO CORE OTF';
   font-size: 40px;
   font-weight: 900;
   margin-bottom: 30px;
   margin-top: 0;
-  margin-left: 0; /* 화면 왼쪽 상단에 위치하도록 마진 조절 */
+  margin-left: 0;
 `;
 
 const Button = styled.div`
@@ -94,13 +130,19 @@ const Button = styled.div`
 `;
 
 const TextareaField = styled.textarea`
-  width: 400px;
-  height: 600px;
-  background: transparent;
+  position: absolute;
+  left: 50%;
+  top: 70%;
+  transform: translate(-50%, -50%);
+  width: 340px;
+  height: 330px; /* 조절할 수 있음 */
+  background: rgba(255, 255, 255, 0); /* 투명도 조절 */
   resize: none;
   border-radius: 5px;
   border: none;
-  margin-bottom: 40px;
-
-  /* font-family: "Cafe24 Shiningstar"; */
+  padding: 10px;
+  line-height: 21.5px;
+  box-sizing: border-box;
+  word-break: break-all;
+  overflow: hidden;
 `;

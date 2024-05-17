@@ -1,20 +1,40 @@
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Frame = () => {
-
   const navigate = useNavigate();
+  const location = useLocation();
+  const data = location.state;
+  let imagelist = [
+    '../public/img/whitebg.png',
+    '../public/img/purplebg.png',
+    '../public/img/blackbg.png',
+  ];
+
+  useEffect(() => console.log(JSON.stringify(data)), [data]);
 
   return (
     <>
       <RootRoot>
         <Title>
-          <Logo loading='lazy' alt='' src='/logo.svg'></Logo> STEP.1 편지지 고르기
+          <Logo loading='lazy' alt='' src='/logo.svg'></Logo> STEP.1 편지지
+          고르기
         </Title>
         <BoxField>
-          <Box onClick={() => { navigate('/write/1'); }}></Box>
-          <Box onClick={() => { navigate('/write/2'); }}></Box>
-          <Box onClick={() => { navigate('/write/3'); }}></Box>
+          {imagelist.map((a, i) => {
+            return (
+              <Image
+                key={i}
+                onClick={() => {
+                  navigate(`/write/${i + 1}`, { state: imagelist[i] });
+                }}
+                src={a}
+                width='390px'
+                height='551px'
+              />
+            );
+          })}
         </BoxField>
         <Footer>
           <Brand>
@@ -44,11 +64,8 @@ const Logo = styled.img`
   height: 60px;
 `;
 
-const Box = styled.div`
-  width: 300px;
-  height: 500px;
-  background: gray;
-  margin: 15px;
+const Image = styled.img`
+  margin: 20px;
 `;
 
 const BoxField = styled.div`
@@ -144,4 +161,3 @@ const RootRoot = styled.div`
   box-sizing: border-box;
   overflow: hidden;
 `;
-

@@ -1,9 +1,16 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export default function Start() {
-
   const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+
+  let data = {
+    name: name,
+    email: email,
+  };
 
   return (
     <>
@@ -19,14 +26,23 @@ export default function Start() {
 
         <TextField>
           <Content>이름</Content>
-          <InputField></InputField>
+          <InputField onChange={(e) => setName(e.target.value)} value={name} />
           <Content>미래에 내가 받을 메일</Content>
-          <InputField></InputField>
+          <InputField
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+          />
           <Box>
             디미고라는 목표를 향해 최선을 다한 미래의 당신에게 <br />
             수고했다는 의미를 담은 편지를 작성해봐요 :&#41;
           </Box>
-          <Button onClick={() => { navigate('/select'); }}>편지 쓰러 가기</Button>
+          <Button
+            onClick={() => {
+              navigate('/select', { state: data });
+            }}
+          >
+            편지 쓰러 가기
+          </Button>
         </TextField>
 
         <Footer>
@@ -120,7 +136,7 @@ const Title = styled.div`
 
 const LogoField = styled.div`
   display: inline;
-`
+`;
 
 const Span = styled.span`
   color: #0076ff;

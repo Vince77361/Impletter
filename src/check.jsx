@@ -1,17 +1,26 @@
 import styled from 'styled-components';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Check = () => {
-
   const navigate = useNavigate();
+  const location = useLocation();
+  const { image } = location.state;
 
   return (
     <>
       <RootRoot>
         <Title>
-          <Logo loading='lazy' alt='' src='/logo.svg'></Logo>STEP.3 보낼 편지 확인
+          <Logo loading='lazy' alt='' src='/logo.svg'></Logo>STEP.3 보낼 편지
+          확인
         </Title>
-        <Button onClick={() => { navigate('/final'); }}>발송하기</Button>
+        <img src={image} width='390px' height='551px' />
+        <Button
+          onClick={() => {
+            navigate('/final');
+          }}
+        >
+          발송하기
+        </Button>
       </RootRoot>
     </>
   );

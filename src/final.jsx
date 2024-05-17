@@ -1,16 +1,17 @@
 import styled from 'styled-components';
-import { useNavigate, useParams } from 'react-router-dom';
 
 const Final = () => {
-
   return (
     <>
       <RootRoot>
         <Title>
-            <Logo loading='lazy' alt='' src='/logo.svg'></Logo>
+          <Logo loading='lazy' alt='' src='/logo.svg'></Logo>
         </Title>
         <h1>편지쓰기 완료!</h1>
-        <Text>최선을 다한 후, 이곳에서 <br />당신을 볼 수 있는 그 날을 기대할게요!</Text>
+        <Text>
+          최선을 다한 후, 이곳에서 <br />
+          당신을 볼 수 있는 그 날을 기대할게요!
+        </Text>
         <Button>디미고 입시 성공하기</Button>
       </RootRoot>
     </>
@@ -76,6 +77,6 @@ const Button = styled.div`
 `;
 
 const Text = styled.div`
-font-weight: 500;
-padding-bottom: 20px;
+  font-weight: 500;
+  padding-bottom: 20px;
 `;
