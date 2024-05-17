@@ -15,36 +15,37 @@ export default function Start() {
   return (
     <>
       <RootRoot>
-        <LogoField>
-          <Logo loading='lazy' alt='' src='/logo.svg' />
-          <Title>
-            합격 발표 직전의 나에게
-            <br />
-            편지쓰기
-          </Title>
-        </LogoField>
-
-        <TextField>
-          <Content>이름</Content>
-          <InputField onChange={(e) => setName(e.target.value)} value={name} />
-          <Content>미래에 내가 받을 메일</Content>
-          <InputField
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-          />
-          <Box>
-            디미고라는 목표를 향해 최선을 다한 미래의 당신에게 <br />
-            수고했다는 의미를 담은 편지를 작성해봐요 :&#41;
-          </Box>
-          <Button
-            onClick={() => {
-              navigate('/select', { state: data });
-            }}
-          >
-            편지 쓰러 가기
-          </Button>
-        </TextField>
-
+        <BoxField>
+          <LogoField>
+            <Logo loading='lazy' alt='' src='/logo.svg' />
+            <Title>
+              합격 발표 직전의 나에게
+              <br />
+              편지쓰기
+            </Title>
+          </LogoField>
+  
+          <TextField>
+            <Content>이름</Content>
+            <InputField onChange={(e) => setName(e.target.value)} value={name} />
+            <Content>미래에 내가 받을 메일</Content>
+            <InputField
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+            />
+            <Box>
+              디미고라는 목표를 향해 최선을 다한 미래의 당신에게 <br />
+              수고했다는 의미를 담은 편지를 작성해봐요 :&#41;
+            </Box>
+            <Button
+              onClick={() => {
+                navigate('/select', { state: data });
+              }}
+            >
+              편지 쓰러 가기
+            </Button>
+          </TextField>
+        </BoxField>
         <Footer>
           <Brand>
             <Implude1>
@@ -66,9 +67,14 @@ export default function Start() {
   );
 }
 
+const BoxField = styled.div`
+display: flex;
+`;
+
 const Logo = styled.img`
-  width: 199.999px;
-  height: 199.999px;
+  width: 150px;
+  height: 150px;
+  padding: 20px;
 `;
 
 const TextField = styled.div`
@@ -93,7 +99,7 @@ const InputField = styled.input`
 const Content = styled.div`
   color: #000;
   font-family: SUIT;
-  font-size: 24px;
+  font-size: 20px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
@@ -126,17 +132,18 @@ const Button = styled.div`
 
 const Box = styled.div`
   margin-bottom: 48px;
-  font-size: 24px;
+  font-size: 20px;
 `;
 
 const Title = styled.div`
   font-weight: 800;
-  font-size: 48px;
+  font-size: 38px;
 `;
 
 const LogoField = styled.div`
   display: inline;
-`;
+  margin-right: 70px;
+`
 
 const Span = styled.span`
   color: #0076ff;
@@ -236,9 +243,10 @@ const RootRoot = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  padding: 277px 240px 32px 402px;
+  padding: 80px;
+  padding-left: 200px;
   box-sizing: border-box;
-  gap: 198px;
+  gap: 50px;
   line-height: normal;
   letter-spacing: normal;
 
@@ -255,3 +263,4 @@ const RootRoot = styled.div`
     box-sizing: border-box;
   }
 `;
+
