@@ -36,7 +36,7 @@ const Letter = () => {
     link.href = uri;
     link.download = filename;
     link.click();
-    document.removeChild(link);
+    document.body.removeChild(link);
   };
 
   return (
