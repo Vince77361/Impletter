@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 const Final = () => {
+  const navigate = useNavigate();
   return (
     <>
       <RootRoot>
@@ -12,7 +14,7 @@ const Final = () => {
           최선을 다한 후, 이곳에서 <br />
           당신을 볼 수 있는 그 날을 기대할게요!
         </Text>
-        <Button>디미고 입시 성공하기</Button>
+        <Button onClick={() => navigate('/')}>디미고 입시 성공하기</Button>
       </RootRoot>
     </>
   );

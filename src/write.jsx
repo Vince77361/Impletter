@@ -1,11 +1,10 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import html2canvas from 'html2canvas';
 
 const Letter = () => {
   const navigate = useNavigate();
-  const textarea = useRef();
   const [value, setValue] = useState('');
   const location = useLocation();
   const data = location.state;
@@ -23,8 +22,12 @@ const Letter = () => {
 
   const onCapture = () => {
     html2canvas(document.getElementById('container')).then((canvas) => {
-      onSaveAs(canvas.toDataURL('image/png'), `image-download.png`);
+      onSaveAs(
+        canvas.toDataURL('image/png'),
+        `${data.user.name}-${data.user.email}.png`
+      );
     });
+    navigate('/final');
   };
 
   const onSaveAs = (uri, filename) => {
@@ -35,7 +38,6 @@ const Letter = () => {
     link.click();
     document.removeChild(link);
   };
-  //navigate('/check', { state: { image: canvas.toDataURL('image/png') } });
 
   return (
     <>
@@ -43,19 +45,25 @@ const Letter = () => {
         <Title>
           <Logo loading='lazy' alt='' src='/logo.svg'></Logo>STEP.2 편지 쓰기
         </Title>
-        <p style={{ marginTop: '-20px' }}>
+        <p style={{ marginTop: '-20px', fontWeight: '700' }}>
           편지의 줄 수를 초과할 경우 제대로 발송이 되지 않습니다.
         </p>
         <ImageContainer id='container'>
-          <Image src={data} />
+          <Image src={data.img} />
           <TextareaField
-            ref={textarea}
+            ImagePath={data.img}
             onChange={handleChange}
-            value={value}
-            rows={14}
+            dangerouslySetInnerHTML={{ __html: value }} // 변경된 부분: innerHTML 사용
+            contentEditable
           />
         </ImageContainer>
-        <Button onClick={onCapture}>완료하기</Button>
+        <Button
+          onClick={() => {
+            onCapture();
+          }}
+        >
+          완료하기
+        </Button>
       </RootRoot>
     </>
   );
@@ -129,7 +137,7 @@ const Button = styled.div`
   }
 `;
 
-const TextareaField = styled.textarea`
+const TextareaField = styled.div`
   position: absolute;
   left: 50%;
   top: 70%;
@@ -137,7 +145,6 @@ const TextareaField = styled.textarea`
   width: 340px;
   height: 330px; /* 조절할 수 있음 */
   background: rgba(255, 255, 255, 0); /* 투명도 조절 */
-  resize: none;
   border-radius: 5px;
   border: none;
   padding: 10px;
@@ -145,4 +152,11 @@ const TextareaField = styled.textarea`
   box-sizing: border-box;
   word-break: break-all;
   overflow: hidden;
+  outline: none; /* 포커스 표시 제거 */
+  white-space: pre-wrap; /* 줄 바꿈 지원 */
+  ${(props) =>
+    props.ImagePath === '../img/blackbg.png' &&
+    css`
+      color: #ffffff;
+    `}
 `;

@@ -1,10 +1,15 @@
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Check = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { image } = location.state;
+  const data = location.state;
+
+  useEffect(() => {
+    console.log(data);
+  }, []);
 
   return (
     <>
@@ -13,7 +18,7 @@ const Check = () => {
           <Logo loading='lazy' alt='' src='/logo.svg'></Logo>STEP.3 보낼 편지
           확인
         </Title>
-        <img src={image} width='390px' height='551px' />
+        <img src={`${data.imge}`} width='390px' height='551px' />
         <Button
           onClick={() => {
             navigate('/final');

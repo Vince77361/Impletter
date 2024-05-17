@@ -7,9 +7,9 @@ const Frame = () => {
   const location = useLocation();
   const data = location.state;
   let imagelist = [
-    '../public/img/whitebg.png',
-    '../public/img/purplebg.png',
-    '../public/img/blackbg.png',
+    '../img/whitebg.png',
+    '../img/purplebg.png',
+    '../img/blackbg.png',
   ];
 
   useEffect(() => console.log(JSON.stringify(data)), [data]);
@@ -27,7 +27,9 @@ const Frame = () => {
               <Image
                 key={i}
                 onClick={() => {
-                  navigate(`/write/${i + 1}`, { state: imagelist[i] });
+                  navigate(`/write/${i + 1}`, {
+                    state: { img: imagelist[i], user: data },
+                  });
                 }}
                 src={a}
                 width='390px'
