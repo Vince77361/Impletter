@@ -94,6 +94,7 @@ const InputField = styled.input`
   flex-shrink: 0;
   margin-bottom: 48px;
   margin-top: 10px;
+  font-size: 20px;
 `;
 
 const Content = styled.div`
@@ -109,8 +110,9 @@ const Button = styled.div`
   border-radius: 20px;
   background: #3d92f4;
   display: inline-flex;
-  height: 85px;
-  padding: 20px 142px;
+  height: 70px;
+  width: 500px;
+  padding: 20px;
   justify-content: center;
   align-items: center;
   gap: 10px;
@@ -263,4 +265,3 @@ const RootRoot = styled.div`
     box-sizing: border-box;
   }
 `;
-
