@@ -1,32 +1,62 @@
 import styled, { css } from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
+import './font.css';
 
 const Letter = () => {
   const navigate = useNavigate();
   const [value, setValue] = useState('');
   const location = useLocation();
   const data = location.state;
+  const textareaRef = useRef(null);
+  const [isComposing, setIsComposing] = useState(false);
 
-  const handleChange = (e) => {
-    const newValue = e.target.value;
-    const lines = newValue.split('\n').length;
-    if (lines <= 14) {
-      setValue(newValue);
+  const handleInput = (e) => {
+    if (!isComposing) {
+      const newValue = e.target.innerText;
+      const lines = newValue.split('\n').length;
+      if (lines <= 14 && newValue.length < 300) {
+        setValue(newValue);
+      }
     }
-    if (newValue < 300) {
-      setValue(newValue);
+  };
+
+  const handleCompositionStart = () => {
+    setIsComposing(true);
+  };
+
+  const handleCompositionEnd = (e) => {
+    setIsComposing(false);
+    handleInput(e); // Composition이 끝나면 최종 값을 처리합니다.
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // 기본 엔터 키 동작을 막음
+      const selection = window.getSelection();
+      const range = selection.getRangeAt(0);
+      const br = document.createElement('br');
+      range.deleteContents();
+      range.insertNode(br);
+      range.setStartAfter(br);
+      range.setEndAfter(br);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      setValue(textareaRef.current.innerText); // value 상태 업데이트
     }
   };
 
   const onCapture = () => {
-    html2canvas(document.getElementById('container')).then((canvas) => {
+    const container = document.getElementById('container');
+    container.style.overflow = 'visible';
+    html2canvas(container).then((canvas) => {
       onSaveAs(
         canvas.toDataURL('image/png'),
         `${data.user.name}-${data.user.email}.png`
       );
     });
+    container.style.overflow = 'hidden';
     navigate('/final');
   };
 
@@ -39,33 +69,41 @@ const Letter = () => {
     document.body.removeChild(link);
   };
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(textareaRef.current);
+      range.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  }, [value]);
+
   return (
-    <>
-      <RootRoot>
-        <Title>
-          <Logo loading='lazy' alt='' src='/logo.svg'></Logo>STEP.2 편지 쓰기
-        </Title>
-        <p style={{ marginTop: '-20px', fontWeight: '700' }}>
-          편지의 줄 수를 초과할 경우 제대로 발송이 되지 않습니다.
-        </p>
-        <ImageContainer id='container'>
-          <Image src={data.img} />
-          <TextareaField
-            ImagePath={data.img}
-            onChange={handleChange}
-            dangerouslySetInnerHTML={{ __html: value }} // 변경된 부분: innerHTML 사용
-            contentEditable
-          />
-        </ImageContainer>
-        <Button
-          onClick={() => {
-            onCapture();
-          }}
-        >
-          완료하기
-        </Button>
-      </RootRoot>
-    </>
+    <RootRoot>
+      <Title>
+        <Logo loading='lazy' alt='' src='/logo.svg'></Logo>STEP.2 편지 쓰기
+      </Title>
+      <p style={{ marginTop: '-20px', fontWeight: '700' }}>
+        편지의 줄 수를 초과할 경우 제대로 발송이 되지 않습니다.
+      </p>
+      <ImageContainer id='container'>
+        <Image src={data.img} />
+        <TextareaField
+          ImagePath={data.img}
+          ref={textareaRef}
+          contentEditable
+          onInput={handleInput}
+          onCompositionStart={handleCompositionStart}
+          onCompositionEnd={handleCompositionEnd}
+          onKeyDown={handleKeyDown}
+          suppressContentEditableWarning={true}
+          dangerouslySetInnerHTML={{ __html: value }} // 초기 value 설정
+        />
+      </ImageContainer>
+      <Button onClick={onCapture}>완료하기</Button>
+    </RootRoot>
   );
 };
 
@@ -76,6 +114,7 @@ const ImageContainer = styled.div`
   width: 390px;
   height: 551px;
   margin-bottom: 20px;
+  overflow: hidden;
 `;
 
 const Image = styled.img`
@@ -138,13 +177,14 @@ const Button = styled.div`
 `;
 
 const TextareaField = styled.div`
+  font-family: 'Cafe';
   position: absolute;
   left: 50%;
   top: 70%;
   transform: translate(-50%, -50%);
   width: 340px;
-  height: 330px; /* 조절할 수 있음 */
-  background: rgba(255, 255, 255, 0); /* 투명도 조절 */
+  height: 330px;
+  background: rgba(255, 255, 255, 0);
   border-radius: 5px;
   border: none;
   padding: 10px;
@@ -152,8 +192,8 @@ const TextareaField = styled.div`
   box-sizing: border-box;
   word-break: break-all;
   overflow: hidden;
-  outline: none; /* 포커스 표시 제거 */
-  white-space: pre-wrap; /* 줄 바꿈 지원 */
+  outline: none;
+  white-space: pre-wrap;
   ${(props) =>
     props.ImagePath === '../img/blackbg.png' &&
     css`
